@@ -4,6 +4,7 @@ import photoRouter from "./routers/photo";
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.json());
 app.use("/photo", photoRouter);
 
 app.get("/", (req: Request, res: Response) => {
