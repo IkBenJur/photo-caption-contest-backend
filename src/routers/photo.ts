@@ -5,6 +5,12 @@ import path from "node:path";
 const photoRouter = express.Router();
 const prisma = new PrismaClient();
 
+photoRouter.get("/", async (req: Request, res: Response) => {
+  const photos = await prisma.photo.findMany();
+
+  res.json(photos);
+});
+
 photoRouter.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   const photo = await prisma.photo.findUnique({
