@@ -1,3 +1,5 @@
 node_modules/
+prisma/
 
 package-lock.json
+.env
