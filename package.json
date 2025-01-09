@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.5",
     "express": "^4.21.2",
@@ -19,7 +20,11 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.2.1"
+    "@node-rs/argon2": "^2.0.2",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "@prisma/client": "^6.2.1",
+    "cookie-parser": "^1.4.7"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
