@@ -15,6 +15,7 @@ photoRouter.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   const photo = await prisma.photo.findUnique({
     where: { id: Number(id) },
+    include: { captions: true },
   });
 
   if (!photo) {
@@ -22,14 +23,7 @@ photoRouter.get("/:id", async (req: Request, res: Response) => {
     return;
   }
 
-  const captions = await prisma.captionsOnPhotos.findMany({
-    where: { photo: photo },
-  });
-
-  res.json({
-    ...photo,
-    captions,
-  });
+  res.json(photo);
 });
 
 photoRouter.get("/file/:id", async (req: Request, res: Response) => {
