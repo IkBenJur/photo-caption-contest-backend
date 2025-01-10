@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import path from "node:path";
+import { authenticate } from "./users";
 
 const photoRouter = express.Router();
 const prisma = new PrismaClient();
@@ -15,6 +16,7 @@ photoRouter.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   const photo = await prisma.photo.findUnique({
     where: { id: Number(id) },
+    include: { captions: true },
   });
 
   if (!photo) {
@@ -22,14 +24,7 @@ photoRouter.get("/:id", async (req: Request, res: Response) => {
     return;
   }
 
-  const captions = await prisma.captionsOnPhotos.findMany({
-    where: { photo: photo },
-  });
-
-  res.json({
-    ...photo,
-    captions,
-  });
+  res.json(photo);
 });
 
 photoRouter.get("/file/:id", async (req: Request, res: Response) => {
@@ -46,23 +41,27 @@ photoRouter.get("/file/:id", async (req: Request, res: Response) => {
   res.sendFile(path.join(process.cwd(), photo.imageUrl));
 });
 
-photoRouter.post("/caption", async (req: Request, res: Response) => {
-  const { caption, userId, photoId } = req.body;
+photoRouter.post(
+  "/caption",
+  authenticate,
+  async (req: Request, res: Response) => {
+    const { caption, userId, photoId } = req.body;
 
-  const captionResult = await prisma.captionsOnPhotos.create({
-    data: {
-      caption,
-      userId,
-      photoId,
-    },
-  });
+    const captionResult = await prisma.captionsOnPhotos.create({
+      data: {
+        caption,
+        userId,
+        photoId,
+      },
+    });
 
-  if (!captionResult) {
-    res.json({ error: "Something went wrong with uploading captions" });
-    return;
+    if (!captionResult) {
+      res.json({ error: "Something went wrong with uploading captions" });
+      return;
+    }
+
+    res.json(captionResult);
   }
-
-  res.json(captionResult);
-});
+);
 
 export default photoRouter;

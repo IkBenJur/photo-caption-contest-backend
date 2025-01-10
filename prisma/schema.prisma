@@ -20,6 +20,14 @@ model User {
     email String @unique
     captions CaptionsOnPhotos[]
     likes UsersLikedCaptions[]
+    session Session[]
+}
+
+model Session {
+  id String @id @default(cuid())
+  expiresAt DateTime
+  userId Int
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Photo {
