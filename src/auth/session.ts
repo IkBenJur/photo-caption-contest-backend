@@ -26,7 +26,7 @@ export async function createSession(sessionToken: string, userId: number) {
   const session = {
     id: sessionId,
     userId,
-    expiresAt: new Date(Date.now(), +SESSION_MAX_DURATION_MS),
+    expiresAt: new Date(Date.now() + SESSION_MAX_DURATION_MS),
   };
 
   return await prisma.session.create({ data: session });
@@ -70,6 +70,7 @@ export async function validateSession(sessionToken: string) {
   return { session, user };
 }
 
-export async function invalidateSession(sessionId: string) {
+export async function invalidateSession(sessionToken: string) {
+  const sessionId = await fromSessionTokenToSessionId(sessionToken);
   await prisma.session.delete({ where: { id: sessionId } });
 }
